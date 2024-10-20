@@ -1,0 +1,6 @@
+# Swarm tokens and IPs
+[swarm-config]
+worker = ""
+manager = ""
+manager_ip = ""  # Swarm manager IP
+current_ip = ""

@@ -1,9 +1,8 @@
 [tool.poetry]
-name = "tailswarm"
+name = "quickswarm"
 version = "0.1.0"
-description = "Helper scripts to create a docker swarm"
+description = ""
 authors = ["phbr <phbrcc@gmail.com>"]
-license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]

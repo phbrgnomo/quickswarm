@@ -54,13 +54,25 @@ bash
 
 ## Scripts
 
-All scripts are written in Python3 and are designed to facilitate the deployment and management of Docker Swarm services.
+All scripts are written in Python and are designed to facilitate the deployment and management of Docker Swarm services.
 
 Scripts are located in the `scripts` directory and are must be executed from the current working directory.
 
 Python poetry is used to manage the scripts packages. [How to install.](https://github.com/python-poetry/install.python-poetry.org)
 
 The description of each script can be seen [here](./scripts/scripts.md).
+
+### How to execute the scripts
+
+1. Install the `poetry` environment
+```bash
+poetry install
+```
+
+2. Execute the script
+```bash
+poetry run python ./scripts/<script name>.py
+```
 
 ## Usage
 
