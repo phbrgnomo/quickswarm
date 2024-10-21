@@ -6,7 +6,7 @@ Reads configuration from config.toml file and executes the necessary Docker comm
 """
 
 import subprocess
-import tomllib  # Built-in TOML parser since Python 3.11
+import tomli
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
@@ -17,21 +17,33 @@ console = Console()
 
 def load_config() -> dict:
     """
-    Load configuration from config.toml file.
+    Load configuration from the 'config.toml' file in the current directory.
     
     Returns:
         dict: Configuration dictionary containing swarm settings
     """
     try:
-        config_path = Path("config.toml")
-        if not config_path.exists():
-            raise FileNotFoundError("config.toml file not found in root directory")
+        # Define the path to the config file
+        config_file_path = Path("config.toml")
         
-        with open(config_path, "rb") as f:
-            config = tomllib.load(f)
-            return config.get("swarm-config", {})
-    except Exception as e:
-        console.print(f"[red]Error loading config.toml: {str(e)}[/red]")
+        # Check if the config file exists
+        if not config_file_path.exists():
+            raise FileNotFoundError(f"'config.toml' file not found in {config_file_path.parent}")
+        
+        # Load the config file
+        with open(config_file_path, "rb") as file:
+            # Parse the TOML file
+            config_data = tomli.load(file)
+            
+            # Get the swarm config from the file
+            # The swarm config is in the 'swarm-config' table
+            swarm_config = config_data.get("swarm-config", {})
+            
+            # Return the swarm config
+            return swarm_config
+    
+    except Exception as error:
+        console.print(f"[red]Error loading 'config.toml': {str(error)}[/red]")
         raise
 
 def add_worker(manager_ip: str, token: str) -> None:
@@ -41,6 +53,10 @@ def add_worker(manager_ip: str, token: str) -> None:
     Args:
         manager_ip (str): The IP address of the manager node
         token (str): The worker token for joining the swarm
+
+    Raises:
+        ValueError: If manager_ip or token is empty
+        RuntimeError: If failed to join the swarm
     """
     if not manager_ip or not token:
         raise ValueError("Manager IP and token are required")
@@ -73,16 +89,18 @@ def add_worker(manager_ip: str, token: str) -> None:
 def main() -> None:
     """
     Main function to execute the worker addition process.
-    Loads configuration and initiates the join operation.
+    
+    Loads configuration from `config.toml` and initiates the join operation.
     """
     try:
-        # Load configuration
+        # Load configuration from config.toml
         config = load_config()
         
         # Extract required values
         manager_ip = config.get("manager_ip")
         worker_token = config.get("worker")
         
+        # Check if manager_ip and worker_token are set
         if not manager_ip or not worker_token:
             raise ValueError("Manager IP and worker token must be set in config.toml")
         
